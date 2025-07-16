@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import About from './pages/About'
 import Favourites from './pages/Favourites'
+import Movie from './pages/Movie'
 function App() {
 
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/favourites" element={<Favourites />} />
+          <Route path="/movie/:id" element={<Movie />} />
         </Routes>
       </div>
     </BrowserRouter>
