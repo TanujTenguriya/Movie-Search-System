@@ -2,22 +2,60 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 function Movie() {
-  const {id} = useParams()
-  const [movie, setMovie] = useState(null)
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-  console.log(id)
-  useEffect(() => {
-    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
-      .then(res => res.json())
-      .then(data => {
-  if (data && data.id) {
-    setMovie(data); // movie found
-  } else {
-    console.error("Invalid movie data:", data);
-  }
-})
+    const {id} = useParams()
+    const [movie, setMovie] = useState(null)
+    const [favourite, setFavourite] = useState(false)
+    const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+    console.log(id)
+    useEffect(() => {
+      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+    if (data && data.id) {
+      setMovie(data); // movie found
+      const stored = JSON.parse(localStorage.getItem("movie")) || [];
+      const alreadyFav = stored.some((m) => m.id === data.id);
+      setFavourite(alreadyFav);
+    } else {
+      console.error("Invalid movie data:", data);
+    }
+  })
       .catch(err => console.error("Fetch error:", err));
   }, [id]);
+
+  const handleAddition = (movie, favourite) => {
+    let stored = [];
+
+  try {
+    const raw = localStorage.getItem("movie");
+    const parsed = JSON.parse(raw);
+
+    // Ensure we only use an array
+    stored = Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    stored = [];
+  }
+  let updated;
+  if(favourite){
+    updated = stored.filter((item) => item.id !== movie.id)
+    setFavourite(false)
+    alert("Removed from favourites")
+  }else{
+    const alreadyExists = stored.some((m) => m.id === movie.id);
+    if (alreadyExists) {
+      alert("Already in favourites");
+      return;
+    }
+  // Check if movie already exists by ID
+    updated = [...stored, movie];
+
+    alert("Added in favourites")
+    setFavourite(true)
+  } 
+  
+    localStorage.setItem("movie", JSON.stringify(updated));
+  }
+
   if (!movie) return <div className="text-white p-4">Loading...</div>;
   return (
   <div className="flex flex-col p-6 min-h-screen">
@@ -32,7 +70,7 @@ function Movie() {
       />
 
       {/* Movie Details */}
-      <div className="flex flex-col gap-4">
+      <div className="flex items-center flex-col gap-4">
         <p className="text-lg mt-8"><span className='font-semibold'>Overview:</span> {movie.overview}</p>
         <p><span className="font-semibold">Release Date:</span> {movie.release_date}</p>
         <p><span className="font-semibold">Runtime:</span> {movie.runtime} min</p>
@@ -44,6 +82,7 @@ function Movie() {
             </span>
           ))}
         </p>
+        <button className='bg-gray-500 w-100' onClick={()=>handleAddition(movie ,favourite)}>{(!favourite && <div>Add to favourites</div>) || (<div>Remove from favourites </div>)}</button>
       </div>
     </div>
   </div>

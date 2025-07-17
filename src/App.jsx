@@ -10,6 +10,7 @@ function App() {
 
   return (
     <>
+    
       <BrowserRouter>
       <Navbar />
       <div className="pt-20 px-6"> {/* spacing below fixed navbar */}
