@@ -7,8 +7,9 @@ function Movie() {
     const [favourite, setFavourite] = useState(false)
     const apiKey = import.meta.env.VITE_TMDB_API_KEY;
     console.log(id)
-    useEffect(() => {
-      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
+    useEffect( () => {
+      const fetchMovie = async () => {
+      await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
         .then(res => res.json())
         .then(data => {
     if (data && data.id) {
@@ -21,6 +22,8 @@ function Movie() {
     }
   })
       .catch(err => console.error("Fetch error:", err));
+}
+fetchMovie()
   }, [id]);
 
   const handleAddition = (movie, favourite) => {
@@ -56,7 +59,14 @@ function Movie() {
     localStorage.setItem("movie", JSON.stringify(updated));
   }
 
-  if (!movie) return <div className="text-white p-4">Loading...</div>;
+  if (!movie) {
+  return (
+    <div className="flex justify-center items-center min-h-screen text-white">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+    </div>
+  );
+}
+
   return (
   <div className="flex flex-col p-6 min-h-screen">
     <h1 className="text-4xl font-bold mb-4">{movie.title}</h1>

@@ -32,6 +32,7 @@ function About() {
 
         <p className="text-lg mt-6">
           Start exploring and building your movie watchlist today!
+          Built by Tanuj Tenguriya
         </p>
       </div>
     </div>

@@ -7,32 +7,17 @@ function Navbar() {
         <div className="text-2xl font-bold">🎬 MovieFinder</div>
         <div className="flex flex-row-reverse gap-8 text-lg">
           <NavLink
-            to="/favourites"
-            className={({ isActive }) =>
-              isActive
-                ? "text-orange-400 font-semibold"
-                : "text-white hover:text-orange-300 transition"
-            }
+            to="/favourites" 
           >
             Favourites
           </NavLink>
           <NavLink
             to="/about"
-            className={({ isActive }) =>
-              isActive
-                ? "text-orange-400 font-semibold"
-                : "text-white hover:text-orange-300 transition"
-            }
           >
             About
           </NavLink>
           <NavLink
             to="/"
-            className={({ isActive }) =>
-              isActive
-                ? "text-orange-400 font-semibold"
-                : "text-white hover:text-orange-300 transition"
-            }
           >
             Home
           </NavLink>

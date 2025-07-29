@@ -14,9 +14,9 @@ useEffect(() => {
     .catch(err => console.error("API error:", err));
 }, []);
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if(!searchKey.trim()) return
-        fetch(`https://api.themoviedb.org/3/search/movie?query=${searchKey}&api_key=${apiKey}`)
+        await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchKey}&api_key=${apiKey}`)
         .then(res => res.json())
         .then(res => setResult(res.results))
         .catch(err => console.log("API error:", err));
