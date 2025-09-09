@@ -14,7 +14,11 @@ function Favourites() {
   return (
     <div>
       {movies.length === 0 &&
-        <div className="mb-6 wt-6 font-bold text-2xl">No Favourites Added</div> }
+        <div className="flex justify-center items-center min-h-[80vh]">
+          <div className="font-bold text-2xl text-slate-700">
+            No Favourites Added
+          </div>
+        </div> }
         {movies.length !== 0 &&
         <div className="flex flex-col gap-2 bg-amber-50 p-4">
             <div className="text-2xl font-bold mb-3">Favourite Movies...</div>
