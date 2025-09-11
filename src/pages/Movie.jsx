@@ -7,24 +7,35 @@ function Movie() {
     const [favourite, setFavourite] = useState(false)
     const apiKey = import.meta.env.VITE_TMDB_API_KEY;
     console.log(id)
-    useEffect( () => {
-      const fetchMovie = async () => {
-      await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
-        .then(res => res.json())
+    useEffect(() => {
+    const fetchMovie = () => {
+      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
         .then(data => {
-    if (data && data.id) {
-      setMovie(data); // movie found
-      const stored = JSON.parse(localStorage.getItem("movie")) || [];
-      const alreadyFav = stored.some((m) => m.id === data.id);
-      setFavourite(alreadyFav);
-    } else {
-      console.error("Invalid movie data:", data);
-    }
-  })
-      .catch(err => console.error("Fetch error:", err));
-}
-fetchMovie()
+          if (data && data.id) {
+            setMovie(data); // valid movie
+
+            const stored = JSON.parse(localStorage.getItem("movie")) || [];
+            const alreadyFav = Array.isArray(stored) && stored.some((m) => m.id === data.id);
+            setFavourite(alreadyFav);
+
+          } else {
+            console.error("Invalid movie data:", data);
+            setMovie(null); // fallback: reset state
+          }
+        })
+        .catch(err => {
+          console.error("Fetch error:", err);
+          setMovie(null); // fallback if API/network fails
+        });
+    };
+
+    fetchMovie();
   }, [id]);
+
 
   const handleAddition = (movie, favourite) => {
     let stored = [];
@@ -62,10 +73,10 @@ fetchMovie()
   if (!movie) {
   return (
     <div className="flex justify-center items-center min-h-screen text-white">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+      <p className="text-xl font-semibold">❌ No movie found or failed to fetch.</p>
     </div>
-  );
-}
+    );
+  }
 
   return (
   <div className="flex flex-col p-6 min-h-screen">

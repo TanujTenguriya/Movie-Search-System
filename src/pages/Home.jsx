@@ -7,22 +7,52 @@ function  Home(){
     const [searchKey, setSearchKey] = useState("")
     const [result, setResult] = useState([])
     const [searchActive, setSearchActive] = useState(false)
-useEffect(() => {
-  fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`)
-    .then(res => res.json())
-    .then(data => setTrending(data.results))
-    .catch(err => console.error("API error:", err));
-}, []);
+    useEffect(() => {
+    fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`)
+        .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+        })
+        .then(data => {
+        // Validate API response
+        if (data && Array.isArray(data.results)) {
+            setTrending(data.results);
+        } else {
+            setTrending([]); // fallback if API returns unexpected data
+        }
+        })
+        .catch(err => {
+        console.error("API error:", err);
+        setTrending([]); // fallback in case of network error
+        });
+    }, []);
 
-    const handleSearch = async () => {
-        if(!searchKey.trim()) return
-        await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchKey}&api_key=${apiKey}`)
-        .then(res => res.json())
-        .then(res => setResult(res.results))
-        .catch(err => console.log("API error:", err));
-        setSearchActive(true)
-        setSearchKey("")
-    }
+
+
+    const handleSearch = () => {
+        if (!searchKey.trim()) return;
+
+        fetch(`https://api.themoviedb.org/3/search/movie?query=${searchKey}&api_key=${apiKey}`)
+            .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            return res.json();
+            })
+            .then(data => {
+            if (data && Array.isArray(data.results)) {
+                setResult(data.results);
+            } else {
+                setResult([]); // fallback if API returns unexpected data
+            }
+            })
+            .catch(err => {
+            console.error("API error:", err);
+            setResult([]); // fallback in case of network or fetch error
+            });
+
+        setSearchActive(true);
+        setSearchKey("");
+    };
+
     
     return (
         <>
